@@ -1963,3 +1963,10 @@ function showcommands() {
 validate_current_shell
 source_vendorsetup
 addcompletions
+
+export ANDROID_BUILD_TOP=$(gettop)
+
+function repopick() {
+    T=$(gettop)
+    $T/vendor/lighthouse/build/tools/repopick.py $@
+}
