@@ -825,6 +825,50 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   # Dump fingerprints
   script.Print("Target: {}".format(target_info.fingerprint))
 
+  android_version = target_info.GetBuildProp("ro.build.version.release")
+  lighthouse_version = target_info.GetBuildProp("ro.lighthouse.build.version")
+  build_id = target_info.GetBuildProp("ro.build.id")
+  build_type = target_info.GetBuildProp("ro.build.type")
+  build_date = target_info.GetBuildProp("ro.build.date")
+  security_patch = target_info.GetBuildProp("ro.build.version.security_patch")
+  device = target_info.GetBuildProp("ro.lighthouse.device")
+  manufacturer = target_info.GetBuildProp("ro.product.manufacturer")
+
+  script.Print("-----------------------------------------------------");
+  script.Print(" ____            _           _                       ");
+  script.Print("|  _ \ _ __ ___ (_) ___  ___| |_                     ");
+  script.Print("| |_) | '__/ _ \| |/ _ \/ __| __|                    ");
+  script.Print("|  __/| | | (_) | |  __/ (__| |_                     ");
+  script.Print("|_|   |_|  \___// |\___|\___|\__|                    ");
+  script.Print("              |__/                                   ");
+  script.Print(" _    _^_      _     _   _                           ");
+  script.Print("| |   |#| __ _| |__ | |_| |__   ___  _   _ ___  ___  ");
+  script.Print("| |   |=|/ _` | '_ \| __| '_ \ / _ \| | | / __|/ _ \ ");
+  script.Print("| |___|0| (_| | | | | |_| | | | (_) | |_| \__ \  __/ ");
+  script.Print("|_____|_|\__, |_| |_|\__|_| |_|\___/ \__,_|___/\___| ");
+  script.Print("         |___/                                       ");
+  script.Print("                                                     ");
+  script.Print("*****************************************************");
+  script.Print("           Brought to you by Team Lighthouse         ");
+  script.Print("-----------------------------------------------------");
+  script.Print(" Android version: %s"%(android_version));
+  script.Print("");
+  script.Print(" Lighthouse version: %s"%(lighthouse_version));
+  script.Print("");
+  script.Print(" Build id: %s"%(build_id));
+  script.Print("");
+  script.Print(" Build type: %s"%(build_type));
+  script.Print("");
+  script.Print(" Build date: %s"%(build_date));
+  script.Print("");
+  script.Print(" Security patch: %s"%(security_patch));
+  script.Print("");
+  script.Print(" Device: %s"%(device));
+  script.Print("");
+  script.Print(" Manufacturer: %s"%(manufacturer));
+  script.Print("-----------------------------------------------------");
+
+
   device_specific.FullOTA_InstallBegin()
 
   if CopyInstallTools(output_zip):
