@@ -4151,6 +4151,7 @@ INTERNAL_OTATOOLS_MODULES := \
   append2simg \
   avbtool \
   blk_alloc_to_base_fs \
+  blueprint_tools \
   boot_signer \
   brillo_update_payload \
   brotli \
