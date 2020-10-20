@@ -32,7 +32,7 @@ PRODUCT_PACKAGES += \
     OneTimeInitializer \
     preinstalled-packages-platform-handheld-product.xml \
     QuickSearchBox \
-    SettingsIntelligence \
+    SettingsIntelligenceAOSP \
     frameworks-base-overlays
 
 ifeq ($(EVOLUTION_BUILD),)
