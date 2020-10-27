@@ -5061,14 +5061,8 @@ $(INTERNAL_OTA_PACKAGE_TARGET): \
 	@echo "Package OTA: $@"
 	$(call build-ota-package-target,$@,-k $(if $(SIGNING_KEYS), $(SIGNING_KEYS)/releasekey, $(KEY_CERT_PAIR)) --output_metadata_path $(INTERNAL_OTA_METADATA))
 
-EVO_TARGET_PACKAGE := $(PRODUCT_OUT)/$(EVO_VERSION).zip
-
-.PHONY: otapackage bacon
+.PHONY: otapackage
 otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
-bacon: otapackage
-	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(EVOLUTION_TARGET_PACKAGE)
-	$(hide) $(MD5SUM) $(EVOLUTION_TARGET_PACKAGE) > $(EVOLUTION_TARGET_PACKAGE).md5sum
-	@echo "**Package complete"**: $(EVOLUTION_TARGET_PACKAGE)"
 
 ifeq ($(BOARD_BUILD_RETROFIT_DYNAMIC_PARTITIONS_OTA_PACKAGE),true)
 name := $(TARGET_PRODUCT)
