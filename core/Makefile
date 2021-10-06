@@ -5388,9 +5388,10 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(OTA_FROM_TARGET_
 
 TARGET_PACKAGE := $(PRODUCT_OUT)/$(LIGHTHOUSE_VERSION).zip
 
-.PHONY: otapackage bacon
+.PHONY: otapackage bacon lighthouse
 otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
 bacon: otapackage
+lighthouse: otapackage
   $(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(TARGET_PACKAGE)
 	$(hide) $(MD5SUM) $(TARGET_PACKAGE) > $(TARGET_PACKAGE).md5sum
 	@echo -e ${CL_BLD}${CL_CYN}"===============================-Package complete-==============================="${CL_RST}
