@@ -5411,7 +5411,6 @@ otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
 bacon: lighthouse
 lighthouse: otapackage
 	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(TARGET_PACKAGE)
-	$(hide) $(MD5SUM) $(TARGET_PACKAGE) > $(TARGET_PACKAGE).md5sum
 	@echo ""
 	@echo -e ${CL_RED}"=============-Package completed successfully-==============="${CL_RED}
 	@echo -e ${CL_RED}"           Thanks for Compiling : Project Lighthouse        "${CL_RED}
@@ -5419,7 +5418,6 @@ lighthouse: otapackage
 	@echo ""
 	@echo -e ${CL_CYN}"════════════════════════════════════════════════════════════"${CL_RST}
 	@echo -e ${CL_BLD}${CL_YLW}"Zip: "${CL_YLW} $(TARGET_PACKAGE)${CL_RST}
-	@echo -e ${CL_BLD}${CL_YLW}"MD5: "${CL_YLW}" `cat $(TARGET_PACKAGE).md5sum | awk '{print $$1}' `"${CL_RST}
 	@echo -e ${CL_BLD}${CL_YLW}"Size: "${CL_YLW}" `du -sh $(TARGET_PACKAGE) | awk '{print $$1}' `"${CL_RST}
 	@echo -e ${CL_CYN}"════════════════════════════════════════════════════════════"${CL_RST}
 
