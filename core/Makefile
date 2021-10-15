@@ -5407,7 +5407,7 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(OTA_FROM_TARGET_
 	@echo "Package OTA: $@"
 	$(call build-ota-package-target,$@,-k $(KEY_CERT_PAIR) --output_metadata_path $(INTERNAL_OTA_METADATA))
 
-TARGET_PACKAGE := $(PRODUCT_OUT)/$(LIGHTHOUSE_VERSION).zip
+TARGET_PACKAGE := $(PRODUCT_OUT)/$(LIGHTHOUSE_BUILD_VERSION).zip
 
 .PHONY: otapackage bacon lighthouse
 otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
