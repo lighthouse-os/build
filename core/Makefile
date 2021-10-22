@@ -5414,6 +5414,7 @@ otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
 bacon: lighthouse
 lighthouse: otapackage
 	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(TARGET_PACKAGE)
+  $(hide) sh vendor/lighthouse/tools/generate_json_build_info.sh $(TARGET_PACKAGE)
 	@echo ""
 	@echo -e ${CL_RED}"=============-Package completed successfully-==============="${CL_RED}
 	@echo -e ${CL_RED}"           Thanks for Compiling : Project Lighthouse        "${CL_RED}
