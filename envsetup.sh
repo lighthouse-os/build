@@ -147,6 +147,14 @@ function check_product()
         echo "Couldn't locate the top of the tree.  Try setting TOP." >&2
         return
     fi
+    if (echo -n $1 | grep -q -e "^lighthouse_") ; then
+        LIGHTHOUSE_BUILD=$(echo -n $1 | sed -e 's/^lighthouse_//g')
+        export BUILD_NUMBER=$( (date +%s%N ; echo $LIGHTHOUSE_BUILD; hostname) | openssl sha1 | sed -e 's/.*=//g; s/ //g' | cut -c1-10 )
+    else
+        LIGHTHOUSE_BUILD=
+    fi
+    export LIGHTHOUSE_BUILD
+
         TARGET_PRODUCT=$1 \
         TARGET_BUILD_VARIANT= \
         TARGET_BUILD_TYPE= \
@@ -360,7 +368,6 @@ function set_stuff_for_environment()
     setpaths
     set_sequence_number
 
-    export ANDROID_BUILD_TOP=$(gettop)
     # With this environment variable new GCC can apply colors to warnings/errors
     export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 }
@@ -697,12 +704,39 @@ function lunch()
         return 1
     fi
 
+    check_product $product
+
     TARGET_PRODUCT=$product \
     TARGET_BUILD_VARIANT=$variant \
     TARGET_PLATFORM_VERSION=$version \
     build_build_var_cache
     if [ $? -ne 0 ]
     then
+        # if we can't find the product, try to grab it from our github
+        T=$(gettop)
+        C=$(pwd)
+        cd $T
+        $T/vendor/lighthouse/build/tools/roomservice.py $product
+        cd $C
+        check_product $product
+    else
+        T=$(gettop)
+        C=$(pwd)
+        cd $T
+        $T/vendor/lighthouse/build/tools/roomservice.py $product true
+        cd $C
+    fi
+    if [ $? -ne 0 ]
+    then
+        echo
+        echo "** Don't have a product spec for: '$product'"
+        echo "** Do you have the right repo manifest?"
+        product=
+    fi
+
+    if [ -z "$product" -o -z "$variant" ]
+    then
+        echo
         return 1
     fi
     export TARGET_PRODUCT=$(get_build_var TARGET_PRODUCT)
@@ -1846,3 +1880,29 @@ function showcommands() {
 validate_current_shell
 source_vendorsetup
 addcompletions
+
+# check and set ccache path on envsetup
+if [ -z ${CCACHE_EXEC} ]; then
+    ccache_path=$(which ccache)
+    if [ ! -z "$ccache_path" ]; then
+        export CCACHE_EXEC="$ccache_path"
+        echo "ccache found and CCACHE_EXEC has been set to : $ccache_path"
+    else
+        echo "ccache not found/installed!"
+    fi
+fi
+
+# check and set ccache path on envsetup
+if [ -z ${CCACHE_EXEC} ]; then
+    ccache_path=$(which ccache)
+    if [ ! -z "$ccache_path" ]; then
+	export USE_CCACHE=1
+	export CCACHE_COMPRESS=1
+        export CCACHE_EXEC="$ccache_path"
+	echo -e "\e[1mccache enabled and \e[32m\e[4mCCACHE_EXEC\e[0m \e[1mhas been set to : \e[4m$ccache_path\e[0m"
+    else
+        echo -e "\e[31m\e[1mccache not found/installed!\e[0m"
+    fi
+fi
+
+export ANDROID_BUILD_TOP=$(gettop)

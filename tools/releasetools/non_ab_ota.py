@@ -182,8 +182,8 @@ def WriteFullOTAPackage(input_zip, output_file):
   #    complete script normally
   #    (allow recovery to mark itself finished and reboot)
 
-  recovery_img = common.GetBootableImage("recovery.img", "recovery.img",
-                                         OPTIONS.input_tmp, "RECOVERY")
+  #recovery_img = common.GetBootableImage("recovery.img", "recovery.img",
+  #                                       OPTIONS.input_tmp, "RECOVERY")
   if OPTIONS.two_step:
     if not target_info.get("multistage_support"):
       assert False, "two-step packages not supported by this build"
@@ -198,7 +198,7 @@ if get_stage("%(bcb_dev)s") == "2/3" then
 
     # Stage 2/3: Write recovery image to /recovery (currently running /boot).
     script.Comment("Stage 2/3")
-    script.WriteRawImage("/recovery", "recovery.img")
+    #script.WriteRawImage("/recovery", "recovery.img")
     script.AppendExtra("""
 set_stage("%(bcb_dev)s", "3/3");
 reboot_now("%(bcb_dev)s", "recovery");
@@ -211,6 +211,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   # Dump fingerprints
   script.Print("Target: {}".format(target_info.fingerprint))
 
+  script.AppendExtra("ifelse(is_mounted(\"/system\"), unmount(\"/system\"));")
   device_specific.FullOTA_InstallBegin()
 
   # All other partitions as well as the data wipe use 10% of the progress, and
@@ -671,11 +672,16 @@ def _WriteRecoveryImageToBoot(script, output_zip):
 
 def HasRecoveryPatch(target_files_zip, info_dict):
   board_uses_vendorimage = info_dict.get("board_uses_vendorimage") == "true"
+  board_builds_vendorimage = info_dict.get("board_builds_vendorimage") == "true"
+  target_files_dir = None
 
-  if board_uses_vendorimage:
+  if board_builds_vendorimage:
     target_files_dir = "VENDOR"
-  else:
+  elif not board_uses_vendorimage:
     target_files_dir = "SYSTEM/vendor"
+
+  if target_files_dir is None:
+    return True
 
   patch = "%s/recovery-from-boot.p" % target_files_dir
   img = "%s/etc/recovery.img" % target_files_dir
